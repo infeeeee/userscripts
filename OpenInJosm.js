@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OpenInJosm
 // @namespace    https://github.com/infeeeee/userscripts
-// @version      0.1
+// @version      0.2
 // @description  Open selected element in Josm
 // @author       infeeeee
 // @match        *://*.openstreetmap.org/*
