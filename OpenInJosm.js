@@ -28,15 +28,23 @@ function openJosm() {
 (function () {
     'use strict';
 
-    const element = document.createElement("button")
+    const element = document.createElement("a")
     element.innerHTML = "Open in JOSM"
 
-    element.style.cssText = "left: 50%; top: 0px; position: fixed; height: 35px; margin: 10px; padding: 0 0.75rem; border: 1px solid #7ebc6f; border-radius: 3px; background: white; color: #7ebc6f";
+    element.style.cssText = "height: 100%; margin-left: 1rem; padding: 0 0.75rem; cursor: pointer; border: 1px solid #7ebc6f; border-radius: 3px; background: white; color: #7ebc6f; vertical-align: middle;    display: inline-flex;    align-items: center;";
     element.style.zIndex = 99999
-    element.onclick = function () {
+    element.onmouseenter = () => {
+        element.style.background = "#7ebc6f"
+        element.style.color = "#fff"
+    }
+    element.onmouseleave = () => {
+        element.style.background = "#fff"
+        element.style.color = "#7ebc6f"
+    }
+    element.onclick = () => {
         openJosm()
     }
 
-    document.body.appendChild(element)
+    document.getElementsByClassName("primary")[0].appendChild(element)
 
 })();
