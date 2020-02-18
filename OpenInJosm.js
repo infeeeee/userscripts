@@ -5,18 +5,23 @@
 // @description  Open selected element in Josm
 // @author       infeeeee
 // @match        *://*.openstreetmap.org/*
+// @exclude      *://*.openstreetmap.org/id*
 // @grant        none
 // ==/UserScript==
 
 
 function openJosm() {
-    let id = location.href.match(/www\.openstreetmap\.org\/(relation|node|way)\/(\d+)/);
-    console.log(id)
+    let id = location.href.match(/www\.openstreetmap\.org\/(relation|node|way|changeset)\/(\d+)/);
+    //console.log(id)
     if (id != null) {
-        let obj = id[1].split("")[0]
-        window.open('http://127.0.0.1:8111/load_object?objects=' + obj + id[2]);
+        if (id[1] == "changeset") {
+            window.open('http://127.0.0.1:8111/import?url=https://www.openstreetmap.org/api/0.6/changeset/' + id[2] + '/download');
+        } else {
+            let obj = id[1].split("")[0]
+            window.open('http://127.0.0.1:8111/load_object?objects=' + obj + id[2]);
+        }
     } else {
-        alert('This script only works on nodes, ways and relations. Please select one!')
+        alert('This script only works on nodes, ways, relations and changesets. Please select one!')
     }
 }
 
