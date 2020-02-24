@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OpenInJosm
 // @namespace    https://github.com/infeeeee/userscripts
-// @version      0.2
+// @version      0.3
 // @description  Open selected element in Josm
 // @author       infeeeee
 // @match        *://*.openstreetmap.org/*
@@ -11,18 +11,44 @@
 
 
 function openJosm() {
-    let id = location.href.match(/www\.openstreetmap\.org\/(relation|node|way|changeset)\/(\d+)/);
-    //console.log(id)
-    if (id != null) {
-        if (id[1] == "changeset") {
-            window.open('http://127.0.0.1:8111/import?url=https://www.openstreetmap.org/api/0.6/changeset/' + id[2] + '/download');
-        } else {
-            let obj = id[1].split("")[0]
-            window.open('http://127.0.0.1:8111/load_object?objects=' + obj + id[2]);
+    let id = location.href.match(/www\.openstreetmap\.org\/(?:(relation|node|way|changeset|note)\/(\d+))?.*(\#map=)(\d{1,2}(?:\/-?[\d\.]+){2})/)
+    console.log(id)
+    if (id) {
+        switch (id[1]) {
+            case "changeset":
+            case "note":
+                window.open('http://127.0.0.1:8111/import?url=https://www.openstreetmap.org/api/0.6/' + id[1] + '/' + id[2] + '/download')
+                break;
+
+            case undefined: {
+                let zll = id[4].split("/")
+                let bbox = calcBbox(zll)
+                window.open('http://127.0.0.1:8111/load_and_zoom?left=' + bbox[0] + '&right=' + bbox[1] + '&top=' + bbox[2] + '&bottom=' + bbox[3])
+                break;
+            }
+            default: {
+                let obj = id[1].split("")[0]
+                window.open('http://127.0.0.1:8111/load_object?objects=' + obj + id[2])
+                break;
+            }
         }
     } else {
-        alert('This script only works on nodes, ways, relations and changesets. Please select one!')
+        alert('Something is wrong! Please open an issue on Github and include your current url!')
     }
+}
+
+function calcBbox(zll) {
+    let zoom = parseInt(zll[0])
+    let x = parseFloat(zll[1])
+    let y = parseFloat(zll[2])
+
+    let left = y - 0.005
+    let right = y + 0.005
+    let top = x + 0.005
+    let bottom = x - 0.005
+
+    return [left.toFixed(4), right.toFixed(4), top.toFixed(4), bottom.toFixed(4)]
+
 }
 
 (function () {
@@ -47,4 +73,4 @@ function openJosm() {
 
     document.getElementsByClassName("primary")[0].appendChild(element)
 
-})();
+})()
